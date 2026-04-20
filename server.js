@@ -28,7 +28,7 @@ async function checkAndNotify() {
     const price = parseFloat(data.result[key].b[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
-    if (price > 1) {
+    if (price > 11900000) {
       const payload = JSON.stringify({
         title: 'BITEX - 価格アラート',
         body: 'BTC ¥' + Math.round(price).toLocaleString() + ' を確認！',
