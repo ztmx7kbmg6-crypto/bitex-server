@@ -29,7 +29,7 @@ async function checkAndNotify() {
     const price = parseFloat(data.result[key].b[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
-    if (lastPrice !== null && Math.abs(price - lastPrice) > 1000) {
+    if (lastPrice !== null && Math.abs(price - lastPrice) > 10) {
       const payload = JSON.stringify({
         title: 'BITEX - 価格変動',
         body: 'BTC ¥' + Math.round(price).toLocaleString() + ' (前回から¥' + Math.round(Math.abs(price - lastPrice)).toLocaleString() + '変動)',
