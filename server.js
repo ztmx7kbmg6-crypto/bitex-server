@@ -22,9 +22,9 @@ app.post('/api/subscribe', (req, res) => {
 
 async function checkAndNotify() {
   try {
-    const res = await fetch('https://api.coinbase.com/v2/prices/BTC-JPY/spot');
-    const data = await res.json();
-    const price = parseFloat(data.data.amount);
+    const res = await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTJPY');
+const data = await res.json();
+const price = parseFloat(data.result.XBTJPY.c[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
     if (price > 1) {
