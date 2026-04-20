@@ -22,13 +22,11 @@ app.post('/api/subscribe', (req, res) => {
 
 async function checkAndNotify() {
   try {
-    const [btcRes, rateRes] = await Promise.all([
-  fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
-  fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTJPY')
-]);
+    const btcRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+const rateRes = await fetch('https://open.er-api.com/v6/latest/USD');
 const btcData = await btcRes.json();
 const rateData = await rateRes.json();
-const price = parseFloat(btcData.price) * parseFloat(rateData.price);
+const price = parseFloat(btcData.price) * rateData.rates.JPY;
     console.log('BTC価格チェック: ¥' + price.toLocaleString());
 
     if (price > 1) {
