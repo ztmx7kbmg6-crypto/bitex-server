@@ -19,20 +19,23 @@ app.post('/api/subscribe', (req, res) => {
   }
   res.json({ ok: true });
 });
-
 async function checkAndNotify() {
   try {
     const btcRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-const rateRes = await fetch('https://open.er-api.com/v6/latest/USD');
-const btcData = await btcRes.json();
-const rateData = await rateRes.json();
-const price = parseFloat(btcData.price) * rateData.rates.JPY;
-    console.log('BTC価格チェック: ¥' + price.toLocaleString());
+    const btcData = await btcRes.json();
+    console.log('BTC raw:', JSON.stringify(btcData));
+
+    const rateRes = await fetch('https://open.er-api.com/v6/latest/USD');
+    const rateData = await rateRes.json();
+    console.log('Rate raw:', JSON.stringify(rateData).slice(0, 100));
+
+    const price = parseFloat(btcData.price) * rateData.rates.JPY;
+    console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
     if (price > 1) {
       const payload = JSON.stringify({
         title: 'BITEX - 価格アラート',
-        body: 'BTC ¥' + price.toLocaleString() + ' を確認！',
+        body: 'BTC ¥' + Math.round(price).toLocaleString() + ' を確認！',
         tag: 'price-alert'
       });
       for (const sub of [...subscriptions]) {
@@ -47,7 +50,6 @@ const price = parseFloat(btcData.price) * rateData.rates.JPY;
     console.error('価格取得エラー:', e.message);
   }
 }
-
 setInterval(checkAndNotify, 10000);
 async function checkAndNotify() {
   try {
