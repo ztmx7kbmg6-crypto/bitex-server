@@ -47,6 +47,30 @@ async function checkAndNotify() {
 }
 
 setInterval(checkAndNotify, 60000);
-checkAndNotify();
+async function checkAndNotify() {
+  try {
+    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCJPY');
+    const data = await res.json();
+    const price = parseFloat(data.price);
+    console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
+
+    if (price > 1) {
+      const payload = JSON.stringify({
+        title: 'BITEX - 価格アラート',
+        body: 'BTC ¥' + Math.round(price).toLocaleString() + ' を確認！',
+        tag: 'price-alert'
+      });
+      for (const sub of [...subscriptions]) {
+        webpush.sendNotification(sub, payload).catch(err => {
+          if (err.statusCode === 410) {
+            subscriptions.splice(subscriptions.indexOf(sub), 1);
+          }
+        });
+      }
+    }
+  } catch (e) {
+    console.error('価格取得エラー:', e.message);
+  }
+}
 
 app.listen(3000, () => console.log('サーバー起動！ポート3000で待機中'));
