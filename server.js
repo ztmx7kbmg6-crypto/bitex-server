@@ -10,6 +10,7 @@ webpush.setVapidDetails(
 );
 
 const subscriptions = [];
+let lastPrice = null;
 
 app.post('/api/subscribe', (req, res) => {
   const sub = req.body;
@@ -28,10 +29,10 @@ async function checkAndNotify() {
     const price = parseFloat(data.result[key].b[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
-    if (price > 11900000) {
+    if (lastPrice !== null && Math.abs(price - lastPrice) > 1000) {
       const payload = JSON.stringify({
-        title: 'BITEX - 価格アラート',
-        body: 'BTC ¥' + Math.round(price).toLocaleString() + ' を確認！',
+        title: 'BITEX - 価格変動',
+        body: 'BTC ¥' + Math.round(price).toLocaleString() + ' (前回から¥' + Math.round(Math.abs(price - lastPrice)).toLocaleString() + '変動)',
         tag: 'price-alert'
       });
       for (const sub of [...subscriptions]) {
@@ -42,6 +43,7 @@ async function checkAndNotify() {
         });
       }
     }
+    lastPrice = price;
   } catch (e) {
     console.error('価格取得エラー:', e.message);
   }
