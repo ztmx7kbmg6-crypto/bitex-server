@@ -19,6 +19,7 @@ app.post('/api/subscribe', (req, res) => {
   }
   res.json({ ok: true });
 });
+
 async function checkAndNotify() {
   try {
     const res = await fetch('https://api.coinbase.com/v2/prices/BTC-JPY/spot');
@@ -40,10 +41,6 @@ async function checkAndNotify() {
         });
       }
     }
-  } catch (e) {
-    console.error('価格取得エラー:', e.message);
-  }
-}
   } catch (e) {
     console.error('価格取得エラー:', e.message);
   }
