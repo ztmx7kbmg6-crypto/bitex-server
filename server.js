@@ -21,15 +21,9 @@ app.post('/api/subscribe', (req, res) => {
 });
 async function checkAndNotify() {
   try {
-    const btcRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-    const btcData = await btcRes.json();
-    console.log('BTC raw:', JSON.stringify(btcData));
-
-    const rateRes = await fetch('https://open.er-api.com/v6/latest/USD');
-    const rateData = await rateRes.json();
-    console.log('Rate raw:', JSON.stringify(rateData).slice(0, 100));
-
-    const price = parseFloat(btcData.price) * rateData.rates.JPY;
+    const res = await fetch('https://api.coinbase.com/v2/prices/BTC-JPY/spot');
+    const data = await res.json();
+    const price = parseFloat(data.data.amount);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
     if (price > 1) {
@@ -46,6 +40,10 @@ async function checkAndNotify() {
         });
       }
     }
+  } catch (e) {
+    console.error('価格取得エラー:', e.message);
+  }
+}
   } catch (e) {
     console.error('価格取得エラー:', e.message);
   }
