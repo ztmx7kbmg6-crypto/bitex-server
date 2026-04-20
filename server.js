@@ -22,9 +22,13 @@ app.post('/api/subscribe', (req, res) => {
 
 async function checkAndNotify() {
   try {
-    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=jpy');
-    const data = await res.json();
-    const price = data.bitcoin.jpy;
+    const [btcRes, rateRes] = await Promise.all([
+  fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+  fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTJPY')
+]);
+const btcData = await btcRes.json();
+const rateData = await rateRes.json();
+const price = parseFloat(btcData.price) * parseFloat(rateData.price);
     console.log('BTC価格チェック: ¥' + price.toLocaleString());
 
     if (price > 1) {
