@@ -51,4 +51,7 @@ async function checkAndNotify() {
   }
 }
 
+setInterval(checkAndNotify, 10000);
+checkAndNotify();
+
 app.listen(3000, () => console.log('サーバー起動！ポート3000で待機中'));
