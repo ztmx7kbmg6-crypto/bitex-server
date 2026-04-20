@@ -25,7 +25,7 @@ async function checkAndNotify() {
     const res = await fetch('https://api.kraken.com/0/public/Ticker?pair=BTCJPY&_=' + Date.now());
     const data = await res.json();
     const key = Object.keys(data.result)[0];
-    const price = parseFloat(data.result[key].c[0]);
+    const price = parseFloat(data.result[key].b[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
     if (price > 1) {
