@@ -22,9 +22,11 @@ app.post('/api/subscribe', (req, res) => {
 
 async function checkAndNotify() {
   try {
-    const res = await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTJPY');
-const data = await res.json();
-const price = parseFloat(data.result.XBTJPY.c[0]);
+    const res = await fetch('https://api.kraken.com/0/public/Ticker?pair=BTCJPY');
+    const data = await res.json();
+    console.log('Kraken raw:', JSON.stringify(data).slice(0, 200));
+    const key = Object.keys(data.result)[0];
+    const price = parseFloat(data.result[key].c[0]);
     console.log('BTC価格チェック: ¥' + Math.round(price).toLocaleString());
 
     if (price > 1) {
