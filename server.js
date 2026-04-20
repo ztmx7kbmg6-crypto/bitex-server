@@ -46,7 +46,7 @@ async function checkAndNotify() {
   }
 }
 
-setInterval(checkAndNotify, 60000);
+setInterval(checkAndNotify, 10000);
 async function checkAndNotify() {
   try {
     const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCJPY');
